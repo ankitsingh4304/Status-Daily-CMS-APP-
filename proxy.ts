@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// Lightweight gate: redirect unauthenticated users to /login for admin pages,
-// and authenticated users away from /login. Full JWT verification still happens
-// server-side via getSession() in the admin layout.
+// Lightweight gate (Next 16 "proxy" convention, formerly "middleware"):
+// redirect unauthenticated users to /login for admin pages, and authenticated
+// users away from /login. Full JWT verification still happens server-side via
+// getSession() in the admin layout.
 const ADMIN_PREFIXES = ['/dashboard', '/categories', '/content', '/users', '/analytics', '/reports', '/languages']
 const SESSION_COOKIE = 'sd_admin_session'
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
   const hasSession = req.cookies.has(SESSION_COOKIE)
 
