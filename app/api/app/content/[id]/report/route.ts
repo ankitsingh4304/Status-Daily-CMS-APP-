@@ -7,7 +7,7 @@ type Params = { params: Promise<{ id: string }> }
 // App-facing: report content (§11, §28).
 const schema = z.object({
   reason: z.string().min(1),
-  userId: z.string().optional(),
+  userId: z.string().nullish(),
 })
 
 export async function POST(req: Request, { params }: Params) {

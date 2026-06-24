@@ -8,7 +8,7 @@ type Params = { params: Promise<{ id: string }> }
 // App-facing: record a share (§11, §12). Increments public share count.
 const schema = z.object({
   platform: z.enum(SHARE_PLATFORMS),
-  userId: z.string().optional(),
+  userId: z.string().nullish(),
 })
 
 export async function POST(req: Request, { params }: Params) {
