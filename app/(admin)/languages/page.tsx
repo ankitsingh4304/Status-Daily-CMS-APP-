@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useApi, apiSend } from '@/hooks/use-api'
-import { Badge, Button, Card, Field, Modal, Spinner, inputClass } from '@/components/ui'
+import { Badge, Button, Card, Field, Modal, PageHeader, Spinner, inputClass } from '@/components/ui'
 
 type Language = {
   id: string
@@ -25,20 +25,18 @@ export default function LanguagesPage() {
 
   return (
     <div className="p-6">
-      <header className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold">Languages</h1>
-          <p className="text-sm text-gray-500">Languages can be added dynamically (§3)</p>
-        </div>
-        <Button onClick={() => setCreating(true)}>+ Add Language</Button>
-      </header>
+      <PageHeader
+        title="Languages"
+        subtitle="Languages can be added dynamically (§3)"
+        actions={<Button onClick={() => setCreating(true)}>+ Add Language</Button>}
+      />
 
       {loading ? (
         <Spinner />
       ) : (
         <Card className="overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-left text-xs text-gray-500">
+            <thead className="bg-gray-50/70 text-left text-[11px] font-semibold uppercase tracking-wide text-faint">
               <tr>
                 <th className="px-4 py-3">Language</th>
                 <th className="px-4 py-3">Code</th>
@@ -51,10 +49,10 @@ export default function LanguagesPage() {
             </thead>
             <tbody>
               {data?.map((l) => (
-                <tr key={l.id} className="border-t border-gray-100">
+                <tr key={l.id} className="border-t border-border transition-colors hover:bg-gray-50/60">
                   <td className="px-4 py-3">
                     <p className="font-medium">{l.nativeName}</p>
-                    <p className="text-[11px] text-gray-400">{l.name}</p>
+                    <p className="text-[11px] text-faint">{l.name}</p>
                   </td>
                   <td className="px-4 py-3"><Badge tone="blue">{l.code}</Badge></td>
                   <td className="px-4 py-3">{l._count.categories}</td>

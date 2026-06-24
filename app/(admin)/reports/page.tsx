@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useApi, apiSend } from '@/hooks/use-api'
-import { Badge, Button, Card, EmptyState, Spinner } from '@/components/ui'
+import { Badge, Button, Card, EmptyState, PageHeader, Spinner } from '@/components/ui'
 import { timeAgo } from '@/lib/format'
 
 type Report = {
@@ -42,15 +42,12 @@ export default function ReportsPage() {
 
   return (
     <div className="p-6">
-      <header className="mb-6">
-        <h1 className="text-xl font-bold">Moderation</h1>
-        <p className="text-sm text-gray-500">Review reported content (§28)</p>
-      </header>
+      <PageHeader title="Moderation" subtitle="Review reported content (§28)" />
 
       <div className="mb-4 flex gap-1">
         {TABS.map((t) => (
           <button key={t.key} onClick={() => setTab(t.key)}
-            className={`rounded-lg px-3 py-1.5 text-sm font-medium ${tab === t.key ? 'bg-brand text-white' : 'bg-white text-gray-600 border border-gray-200'}`}>
+            className={`rounded-lg px-3 py-1.5 text-sm font-medium ${tab === t.key ? 'bg-brand text-white' : 'bg-surface text-muted border border-border'}`}>
             {t.label}
           </button>
         ))}
@@ -74,9 +71,9 @@ export default function ReportsPage() {
                   {r.content?.isBlocked && <Badge tone="red">blocked</Badge>}
                   <Badge tone={r.status === 'pending' ? 'orange' : r.status === 'resolved' ? 'green' : 'gray'}>{r.status}</Badge>
                 </div>
-                <p className="text-xs text-gray-500">{r.content?.category.name} · {r.content?.type}</p>
+                <p className="text-xs text-muted">{r.content?.category.name} · {r.content?.type}</p>
                 <p className="mt-1 text-sm text-red-600">⚑ {r.reason}</p>
-                <p className="text-[11px] text-gray-400">
+                <p className="text-[11px] text-faint">
                   by {r.user?.name ?? 'Anonymous'} · {timeAgo(r.createdAt)} · {r.content?.reportCount} total reports
                 </p>
               </div>

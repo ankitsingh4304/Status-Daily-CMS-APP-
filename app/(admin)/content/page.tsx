@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useApi, apiSend } from '@/hooks/use-api'
-import { Badge, Button, Card, EmptyState, Field, Modal, Spinner, inputClass } from '@/components/ui'
+import { Badge, Button, Card, EmptyState, Field, Modal, PageHeader, Spinner, inputClass } from '@/components/ui'
 import { compactNumber, formatDate } from '@/lib/format'
 
 type Ref = { id: string; name: string; code?: string }
@@ -75,13 +75,11 @@ export default function ContentPage() {
 
   return (
     <div className="p-6">
-      <header className="mb-4 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold">Content</h1>
-          <p className="text-sm text-gray-500">{data?.total ?? 0} templates · upload, publish & reuse</p>
-        </div>
-        <Button onClick={() => setShowUpload(true)}>+ Upload Content</Button>
-      </header>
+      <PageHeader
+        title="Content"
+        subtitle={`${data?.total ?? 0} templates · upload, publish & reuse`}
+        actions={<Button onClick={() => setShowUpload(true)}>+ Upload Content</Button>}
+      />
 
       {/* Filters */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -147,13 +145,13 @@ export default function ContentPage() {
               </div>
               <div className="p-2.5">
                 <p className="truncate text-xs font-semibold">{c.title ?? 'Untitled'}</p>
-                <p className="text-[11px] text-gray-400">{c.category.name} · {c.language.name}</p>
-                <div className="mt-1 flex gap-2 text-[11px] text-gray-500">
+                <p className="text-[11px] text-faint">{c.category.name} · {c.language.name}</p>
+                <div className="mt-1 flex gap-2 text-[11px] text-muted">
                   <span>↗ {compactNumber(c.shareCount)}</span>
                   <span>♥ {compactNumber(c.likeCount)}</span>
                   {c.reportCount > 0 && <span className="text-red-500">⚑ {c.reportCount}</span>}
                 </div>
-                <p className="mt-0.5 text-[10px] text-gray-300">{formatDate(c.uploadDate)}</p>
+                <p className="mt-0.5 text-[10px] text-faint">{formatDate(c.uploadDate)}</p>
                 <div className="mt-2 flex flex-wrap gap-1">
                   <Button size="sm" variant="secondary"
                     onClick={() => single(c.id, { status: c.status === 'published' ? 'draft' : 'published' })}>
@@ -175,7 +173,7 @@ export default function ContentPage() {
       {data && data.pages > 1 && (
         <div className="mt-6 flex items-center justify-center gap-2">
           <Button size="sm" variant="secondary" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Prev</Button>
-          <span className="text-sm text-gray-500">Page {page} / {data.pages}</span>
+          <span className="text-sm text-muted">Page {page} / {data.pages}</span>
           <Button size="sm" variant="secondary" disabled={page >= data.pages} onClick={() => setPage((p) => p + 1)}>Next</Button>
         </div>
       )}
@@ -202,7 +200,7 @@ function Select({
 }) {
   return (
     <select value={value} onChange={(e) => onChange(e.target.value)}
-      className="rounded-lg border border-gray-300 bg-white px-2.5 py-2 text-sm outline-none focus:border-brand">
+      className="rounded-lg border border-border bg-white px-2.5 py-2 text-sm outline-none focus:border-brand">
       <option value="">{placeholder}</option>
       {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
     </select>

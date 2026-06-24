@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useApi, apiSend } from '@/hooks/use-api'
-import { Badge, Button, Card, EmptyState, Field, Modal, Spinner, inputClass } from '@/components/ui'
+import { Badge, Button, Card, EmptyState, Field, Modal, PageHeader, Spinner, inputClass } from '@/components/ui'
 
 type Lang = { id: string; code: string; name: string }
 type Category = {
@@ -33,13 +33,11 @@ export default function CategoriesPage() {
 
   return (
     <div className="p-6">
-      <header className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold">Categories</h1>
-          <p className="text-sm text-gray-500">Create categories and map them to languages</p>
-        </div>
-        <Button onClick={() => setCreating(true)}>+ New Category</Button>
-      </header>
+      <PageHeader
+        title="Categories"
+        subtitle="Create categories and map them to languages"
+        actions={<Button onClick={() => setCreating(true)}>+ New Category</Button>}
+      />
 
       {loading ? (
         <Spinner />
@@ -52,7 +50,7 @@ export default function CategoriesPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="font-semibold">{c.name}</p>
-                  <p className="text-[11px] text-gray-400">{c.key}</p>
+                  <p className="text-[11px] text-faint">{c.key}</p>
                 </div>
                 <Badge tone={c.isPublished ? 'green' : 'gray'}>
                   {c.isPublished ? 'Published' : 'Draft'}
@@ -63,7 +61,7 @@ export default function CategoriesPage() {
                   <Badge key={l.id} tone="blue">{l.code}</Badge>
                 ))}
               </div>
-              <p className="mt-3 text-xs text-gray-500">{c._count.content} content items</p>
+              <p className="mt-3 text-xs text-muted">{c._count.content} content items</p>
               <div className="mt-3 flex gap-2">
                 <Button size="sm" variant="secondary" onClick={() => setEditing(c)}>Edit</Button>
                 <Button size="sm" variant="secondary" onClick={() => togglePublish(c)}>

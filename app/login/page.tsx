@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Sparkles } from 'lucide-react'
 import { Button, Field, inputClass } from '@/components/ui'
 
 export default function LoginPage() {
@@ -34,14 +35,14 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-1 items-center justify-center bg-gradient-to-br from-orange-50 to-amber-100 p-4">
-      <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-lg">
+    <div className="flex min-h-screen flex-1 items-center justify-center bg-gradient-to-br from-brand-soft via-background to-emerald-50 p-4">
+      <div className="w-full max-w-sm animate-pop-in rounded-2xl border border-border bg-surface p-8 shadow-pop">
         <div className="mb-6 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-brand text-xl font-bold text-white">
-            S
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand to-brand-dark text-white shadow-sm">
+            <Sparkles size={22} strokeWidth={2.4} />
           </div>
-          <h1 className="text-lg font-bold">Status Daily CMS</h1>
-          <p className="text-xs text-gray-500">Admin dashboard sign in</p>
+          <h1 className="text-lg font-bold text-foreground">Status Daily CMS</h1>
+          <p className="text-xs text-muted">Admin dashboard sign in</p>
         </div>
 
         <form onSubmit={submit} className="space-y-4">

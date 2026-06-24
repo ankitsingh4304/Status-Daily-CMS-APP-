@@ -1,28 +1,84 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5f6f8;
-  --foreground: #1a1d21;
-  --brand: #ff6a00;
-  --brand-dark: #e85f00;
+  /* Surfaces & text */
+  --background: #f3f6f4;     /* soft green-tinted canvas */
+  --surface: #ffffff;
+  --foreground: #14241b;     /* near-black green */
+  --muted: #62716a;          /* secondary text */
+  --faint: #93a39b;          /* tertiary text */
+  --border: #e7ece9;
+
+  /* Brand — green primary + marigold accent */
+  --brand: #2e8b57;
+  --brand-dark: #246c45;
+  --brand-soft: #e9f5ee;     /* tinted backgrounds / active nav */
+  --accent: #f5a623;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-border: var(--border);
   --color-brand: var(--brand);
   --color-brand-dark: var(--brand-dark);
+  --color-brand-soft: var(--brand-soft);
+  --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Soft, layered elevation */
+  --shadow-card: 0 1px 2px rgba(20, 36, 27, 0.04), 0 1px 3px rgba(20, 36, 27, 0.06);
+  --shadow-pop: 0 8px 30px rgba(20, 36, 27, 0.12), 0 2px 8px rgba(20, 36, 27, 0.08);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
+
+/* Headings a touch tighter */
+h1, h2, h3 { letter-spacing: -0.01em; }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #cbd0d6 transparent;
+  scrollbar-color: #cdd6d1 transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: #cdd6d1; border-radius: 999px; }
+
+/* Reusable elevation utilities (used by the UI kit) */
+.shadow-card { box-shadow: var(--shadow-card); }
+.shadow-pop { box-shadow: var(--shadow-pop); }
+
+/* Subtle entrance for modals/popovers */
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-pop-in { animation: pop-in 0.16s cubic-bezier(0.22, 1, 0.36, 1); }
+
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+.animate-fade-in { animation: fade-in 0.2s ease; }
+
+/* Skeleton shimmer */
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e9efeb;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: shimmer 1.4s infinite;
 }

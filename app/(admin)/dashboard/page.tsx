@@ -1,8 +1,19 @@
 'use client'
 
 import Link from 'next/link'
+import {
+  Users as UsersIcon,
+  Crown,
+  Activity,
+  Share2,
+  LayoutGrid,
+  Images,
+  Trophy,
+  Languages as LanguagesIcon,
+  ArrowRight,
+} from 'lucide-react'
 import { useApi } from '@/hooks/use-api'
-import { Card, Spinner } from '@/components/ui'
+import { Card, PageHeader, SkeletonGrid, StatCard } from '@/components/ui'
 import { compactNumber } from '@/lib/format'
 
 type Stats = {
@@ -19,46 +30,30 @@ type Stats = {
 export default function DashboardPage() {
   const { data, loading } = useApi<Stats>('/api/admin/dashboard')
 
-  const cards = data
-    ? [
-        { label: 'Total Users', value: compactNumber(data.totalUsers), tone: 'text-blue-600', icon: '☺' },
-        { label: 'Premium Users', value: compactNumber(data.premiumUsers), tone: 'text-purple-600', icon: '★' },
-        { label: 'Active Users (30d)', value: compactNumber(data.activeUsers), tone: 'text-green-600', icon: '◉' },
-        { label: 'Total Shares', value: compactNumber(data.totalShares), tone: 'text-brand', icon: '↗' },
-        { label: 'Categories', value: String(data.totalCategories), tone: 'text-amber-600', icon: '◫' },
-        { label: 'Uploaded Content', value: compactNumber(data.totalContent), tone: 'text-teal-600', icon: '▦' },
-        { label: 'Top Category', value: data.topCategory, tone: 'text-rose-600', icon: '♛', small: true },
-        { label: 'Top Language', value: data.topLanguage, tone: 'text-indigo-600', icon: '⒜', small: true },
-      ]
-    : []
-
   return (
     <div className="p-6">
-      <header className="mb-6">
-        <h1 className="text-xl font-bold">Dashboard</h1>
-        <p className="text-sm text-gray-500">Overview of Status Daily activity</p>
-      </header>
+      <PageHeader title="Dashboard" subtitle="Overview of Status Daily activity" />
 
-      {loading ? (
-        <Spinner />
+      {loading || !data ? (
+        <SkeletonGrid count={8} />
       ) : (
         <>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            {cards.map((c) => (
-              <Card key={c.label} className="p-4">
-                <div className="flex items-start justify-between">
-                  <p className="text-xs font-medium text-gray-500">{c.label}</p>
-                  <span className={`text-lg ${c.tone}`}>{c.icon}</span>
-                </div>
-                <p className={`mt-2 font-bold ${c.small ? 'text-lg' : 'text-2xl'}`}>{c.value}</p>
-              </Card>
-            ))}
+            <StatCard label="Total Users" value={compactNumber(data.totalUsers)} tone="blue" icon={<UsersIcon size={16} />} />
+            <StatCard label="Premium Users" value={compactNumber(data.premiumUsers)} tone="violet" icon={<Crown size={16} />} />
+            <StatCard label="Active Users (30d)" value={compactNumber(data.activeUsers)} tone="brand" icon={<Activity size={16} />} />
+            <StatCard label="Total Shares" value={compactNumber(data.totalShares)} tone="teal" icon={<Share2 size={16} />} />
+            <StatCard label="Categories" value={String(data.totalCategories)} tone="amber" icon={<LayoutGrid size={16} />} />
+            <StatCard label="Uploaded Content" value={compactNumber(data.totalContent)} tone="indigo" icon={<Images size={16} />} />
+            <StatCard label="Top Category" value={data.topCategory} tone="rose" icon={<Trophy size={16} />} />
+            <StatCard label="Top Language" value={data.topLanguage} tone="brand" icon={<LanguagesIcon size={16} />} />
           </div>
 
-          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-            <QuickLink href="/content" title="Manage Content" desc="Upload, publish & organize templates" />
-            <QuickLink href="/categories" title="Manage Categories" desc="Create categories & map languages" />
-            <QuickLink href="/reports" title="Moderation Queue" desc="Review reported content" />
+          <h2 className="mb-3 mt-9 text-sm font-semibold text-foreground">Quick actions</h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <QuickLink href="/content" title="Manage Content" desc="Upload, publish & organize templates" icon={<Images size={18} />} />
+            <QuickLink href="/categories" title="Manage Categories" desc="Create categories & map languages" icon={<LayoutGrid size={18} />} />
+            <QuickLink href="/reports" title="Moderation Queue" desc="Review reported content" icon={<Activity size={18} />} />
           </div>
         </>
       )}
@@ -66,12 +61,32 @@ export default function DashboardPage() {
   )
 }
 
-function QuickLink({ href, title, desc }: { href: string; title: string; desc: string }) {
+function QuickLink({
+  href,
+  title,
+  desc,
+  icon,
+}: {
+  href: string
+  title: string
+  desc: string
+  icon: React.ReactNode
+}) {
   return (
     <Link href={href}>
-      <Card className="p-5 transition-shadow hover:shadow-md">
-        <p className="text-sm font-semibold text-brand">{title} →</p>
-        <p className="mt-1 text-xs text-gray-500">{desc}</p>
+      <Card className="group p-5" hover>
+        <div className="flex items-start gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-brand">
+            {icon}
+          </span>
+          <div className="flex-1">
+            <p className="flex items-center gap-1 text-sm font-semibold text-foreground">
+              {title}
+              <ArrowRight size={14} className="opacity-0 transition-opacity group-hover:opacity-100" />
+            </p>
+            <p className="mt-0.5 text-xs text-muted">{desc}</p>
+          </div>
+        </div>
       </Card>
     </Link>
   )
