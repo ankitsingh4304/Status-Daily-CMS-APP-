@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { InlineScript } from "@/components/inline-script";
+
+const THEME_SCRIPT = `try{if(localStorage.getItem('cms-theme')==='dark'){document.documentElement.classList.add('dark')}}catch(e){}`;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,15 +31,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <head>
-        {/* Apply saved theme before paint to avoid a flash of the wrong theme. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.getItem('cms-theme')==='dark'){document.documentElement.classList.add('dark')}}catch(e){}`,
-          }}
-        />
-      </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {/* Apply saved theme before first paint (no flash). Runs on the server-
+            rendered HTML; inert on the client to avoid React's script warning. */}
+        <InlineScript html={THEME_SCRIPT} />
+        {children}
+      </body>
     </html>
   );
 }
