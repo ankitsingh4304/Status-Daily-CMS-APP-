@@ -74,7 +74,7 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <p className="mt-4 text-center text-[11px] text-gray-400">
+        <p className="mt-4 text-center text-[11px] text-faint">
           Demo: admin@statusdaily.app / admin123
         </p>
       </div>

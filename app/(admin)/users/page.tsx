@@ -48,7 +48,7 @@ export default function UsersPage() {
       ) : (
         <Card className="overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50/70 text-left text-[11px] font-semibold uppercase tracking-wide text-faint">
+            <thead className="bg-subtle/70 text-left text-[11px] font-semibold uppercase tracking-wide text-faint">
               <tr>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Mobile</th>
@@ -61,7 +61,7 @@ export default function UsersPage() {
             </thead>
             <tbody>
               {data.items.map((u) => (
-                <tr key={u.id} className="border-t border-border transition-colors hover:bg-gray-50/60">
+                <tr key={u.id} className="border-t border-border transition-colors hover:bg-subtle/60">
                   <td className="px-4 py-3 font-medium">{u.name ?? '—'}</td>
                   <td className="px-4 py-3 font-mono text-xs">{u.mobile}</td>
                   <td className="px-4 py-3">{u.language ? <Badge tone="blue">{u.language.code}</Badge> : '—'}</td>
@@ -79,10 +79,10 @@ export default function UsersPage() {
       {data && data.pages > 1 && (
         <div className="mt-6 flex items-center justify-center gap-2 text-sm">
           <button disabled={page <= 1} onClick={() => setPage((p) => p - 1)}
-            className="rounded-lg border border-gray-300 px-3 py-1 disabled:opacity-40">Prev</button>
+            className="rounded-lg border border-border px-3 py-1 disabled:opacity-40">Prev</button>
           <span className="text-muted">Page {page} / {data.pages}</span>
           <button disabled={page >= data.pages} onClick={() => setPage((p) => p + 1)}
-            className="rounded-lg border border-gray-300 px-3 py-1 disabled:opacity-40">Next</button>
+            className="rounded-lg border border-border px-3 py-1 disabled:opacity-40">Next</button>
         </div>
       )}
     </div>

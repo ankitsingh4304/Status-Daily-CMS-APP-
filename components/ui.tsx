@@ -32,7 +32,7 @@ export function Badge({
   tone?: 'gray' | 'green' | 'orange' | 'red' | 'blue' | 'purple'
 }) {
   const tones: Record<string, string> = {
-    gray: 'bg-gray-100 text-gray-600 ring-gray-200',
+    gray: 'bg-track text-muted ring-border',
     green: 'bg-brand-soft text-brand-dark ring-brand/20',
     orange: 'bg-amber-50 text-amber-700 ring-amber-200',
     red: 'bg-red-50 text-red-600 ring-red-200',
@@ -70,9 +70,9 @@ export function Button({
 }: BtnProps) {
   const variants: Record<string, string> = {
     primary: 'bg-brand text-white shadow-sm hover:bg-brand-dark active:scale-[0.98]',
-    secondary: 'bg-surface border border-border text-foreground hover:bg-gray-50 active:scale-[0.98]',
+    secondary: 'bg-surface border border-border text-foreground hover:bg-subtle active:scale-[0.98]',
     danger: 'bg-red-600 text-white shadow-sm hover:bg-red-700 active:scale-[0.98]',
-    ghost: 'text-muted hover:bg-gray-100 hover:text-foreground',
+    ghost: 'text-muted hover:bg-track hover:text-foreground',
   }
   const sizes: Record<string, string> = {
     sm: 'px-2.5 py-1.5 text-xs',
@@ -94,7 +94,7 @@ export function Button({
 export function Spinner({ label = 'Loading…' }: { label?: string }) {
   return (
     <div className="flex items-center justify-center gap-2 py-16 text-sm text-faint">
-      <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-200 border-t-brand" />
+      <div className="h-4 w-4 animate-spin rounded-full border-2 border-border border-t-brand" />
       {label}
     </div>
   )
@@ -223,7 +223,7 @@ export function Modal({
           <h3 className="text-base font-semibold text-foreground">{title}</h3>
           <button
             onClick={onClose}
-            className="flex h-7 w-7 items-center justify-center rounded-lg text-faint transition-colors hover:bg-gray-100 hover:text-foreground"
+            className="flex h-7 w-7 items-center justify-center rounded-lg text-faint transition-colors hover:bg-track hover:text-foreground"
           >
             ✕
           </button>

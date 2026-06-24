@@ -154,7 +154,7 @@ function CategoryModal({
                 type="button"
                 onClick={() => toggleLang(l.id)}
                 className={`rounded-full px-3 py-1 text-xs font-medium ${
-                  langIds.includes(l.id) ? 'bg-brand text-white' : 'bg-gray-100 text-gray-600'
+                  langIds.includes(l.id) ? 'bg-brand text-white' : 'bg-track text-muted'
                 }`}
               >
                 {l.name}

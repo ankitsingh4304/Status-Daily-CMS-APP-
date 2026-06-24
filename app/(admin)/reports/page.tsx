@@ -61,7 +61,7 @@ export default function ReportsPage() {
         <div className="space-y-3">
           {data.map((r) => (
             <Card key={r.id} className="flex items-center gap-4 p-4">
-              <div className="h-20 w-16 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+              <div className="h-20 w-16 shrink-0 overflow-hidden rounded-lg bg-track">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={r.content?.thumbnailUrl ?? r.content?.mediaUrl ?? ''} alt="" className="h-full w-full object-cover" />
               </div>

@@ -14,6 +14,26 @@
   --brand-dark: #246c45;
   --brand-soft: #e9f5ee;     /* tinted backgrounds / active nav */
   --accent: #f5a623;
+
+  /* Neutral fills (theme-aware so dark mode flips them) */
+  --subtle: #f1f5f3;         /* hover rows, table headers, ghost hovers */
+  --track: #e8efeb;          /* bar rails, image placeholders, gray chips */
+}
+
+/* Dark theme — flip the tokens; every token-based utility adapts automatically */
+.dark {
+  --background: #0f1512;
+  --surface: #171f1a;
+  --foreground: #e7efe9;
+  --muted: #9aa9a0;
+  --faint: #6b7a71;
+  --border: #26302a;
+  --brand: #3fae6e;
+  --brand-dark: #2e8b57;
+  --brand-soft: #16281e;
+  --accent: #f5a623;
+  --subtle: rgba(255, 255, 255, 0.045);
+  --track: rgba(255, 255, 255, 0.09);
 }
 
 @theme inline {
@@ -27,6 +47,8 @@
   --color-brand-dark: var(--brand-dark);
   --color-brand-soft: var(--brand-soft);
   --color-accent: var(--accent);
+  --color-subtle: var(--subtle);
+  --color-track: var(--track);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
@@ -73,6 +95,10 @@ h1, h2, h3 { letter-spacing: -0.01em; }
   position: relative;
   overflow: hidden;
   background: #e9efeb;
+}
+.dark .skeleton { background: #1d2722; }
+.dark .skeleton::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
 }
 .skeleton::after {
   content: "";

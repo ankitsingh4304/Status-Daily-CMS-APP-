@@ -14,6 +14,7 @@ import {
   Sparkles,
   type LucideIcon,
 } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 const NAV: { href: string; label: string; icon: LucideIcon }[] = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -72,7 +73,7 @@ export function Sidebar({ adminName }: { adminName: string }) {
               className={`group relative flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
                 active
                   ? 'bg-brand-soft text-brand-dark'
-                  : 'text-muted hover:bg-gray-50 hover:text-foreground'
+                  : 'text-muted hover:bg-subtle hover:text-foreground'
               }`}
             >
               {active && (
@@ -96,9 +97,10 @@ export function Sidebar({ adminName }: { adminName: string }) {
             <p className="text-[11px] text-faint">Administrator</p>
           </div>
         </div>
+        <ThemeToggle />
         <button
           onClick={logout}
-          className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-gray-50 hover:text-foreground"
+          className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-subtle hover:text-foreground"
         >
           <LogOut size={17} strokeWidth={2} /> Sign out
         </button>

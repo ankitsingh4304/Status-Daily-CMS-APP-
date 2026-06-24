@@ -121,7 +121,7 @@ export default function ContentPage() {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {data.items.map((c) => (
             <Card key={c.id} className={`overflow-hidden ${selected.has(c.id) ? 'ring-2 ring-brand' : ''}`}>
-              <div className="relative aspect-[3/4] bg-gray-100">
+              <div className="relative aspect-[3/4] bg-track">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={c.thumbnailUrl ?? c.mediaUrl}

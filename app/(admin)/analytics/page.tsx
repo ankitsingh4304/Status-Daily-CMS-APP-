@@ -62,7 +62,7 @@ export default function AnalyticsPage() {
             {data.platforms.map((p) => (
               <div key={p.platform} className="flex items-center gap-3">
                 <span className="w-20 text-xs capitalize text-muted">{p.platform}</span>
-                <div className="h-4 flex-1 rounded bg-gray-100">
+                <div className="h-4 flex-1 rounded bg-track">
                   <div className="h-4 rounded bg-blue-500" style={{ width: `${(p.count / maxPlatform) * 100}%` }} />
                 </div>
                 <span className="w-10 text-right text-xs text-muted">{compactNumber(p.count)}</span>
@@ -78,7 +78,7 @@ export default function AnalyticsPage() {
             {data.topCategories.map((c) => (
               <div key={c.name} className="flex items-center gap-3">
                 <span className="w-24 truncate text-xs text-muted">{c.name}</span>
-                <div className="h-4 flex-1 rounded bg-gray-100">
+                <div className="h-4 flex-1 rounded bg-track">
                   <div className="h-4 rounded bg-brand" style={{ width: `${(c.shares / maxCat) * 100}%` }} />
                 </div>
                 <span className="w-12 text-right text-xs text-muted">{compactNumber(c.shares)}</span>
@@ -107,7 +107,7 @@ export default function AnalyticsPage() {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
           {data.mostShared.map((c) => (
             <div key={c.id} className="overflow-hidden rounded-lg border border-border">
-              <div className="aspect-[3/4] bg-gray-100">
+              <div className="aspect-[3/4] bg-track">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={c.thumbnailUrl ?? ''} alt="" className="h-full w-full object-cover" />
               </div>

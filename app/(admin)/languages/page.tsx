@@ -36,7 +36,7 @@ export default function LanguagesPage() {
       ) : (
         <Card className="overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50/70 text-left text-[11px] font-semibold uppercase tracking-wide text-faint">
+            <thead className="bg-subtle/70 text-left text-[11px] font-semibold uppercase tracking-wide text-faint">
               <tr>
                 <th className="px-4 py-3">Language</th>
                 <th className="px-4 py-3">Code</th>
@@ -49,7 +49,7 @@ export default function LanguagesPage() {
             </thead>
             <tbody>
               {data?.map((l) => (
-                <tr key={l.id} className="border-t border-border transition-colors hover:bg-gray-50/60">
+                <tr key={l.id} className="border-t border-border transition-colors hover:bg-subtle/60">
                   <td className="px-4 py-3">
                     <p className="font-medium">{l.nativeName}</p>
                     <p className="text-[11px] text-faint">{l.name}</p>
