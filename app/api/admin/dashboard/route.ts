@@ -37,11 +37,14 @@ export async function GET() {
     (a, b) => (b._sum.shareCount ?? 0) - (a._sum.shareCount ?? 0),
   )[0]
 
+  // Only call something the "top" when it actually has shares — otherwise show —.
+  const hasTopCat = topCatAgg && (topCatAgg._sum.shareCount ?? 0) > 0
+  const hasTopLang = topLangAgg && (topLangAgg._sum.shareCount ?? 0) > 0
   const [topCategory, topLanguage] = await Promise.all([
-    topCatAgg
+    hasTopCat
       ? prisma.category.findUnique({ where: { id: topCatAgg.categoryId }, select: { name: true } })
       : null,
-    topLangAgg
+    hasTopLang
       ? prisma.language.findUnique({ where: { id: topLangAgg.languageId }, select: { name: true } })
       : null,
   ])
