@@ -1,0 +1,185 @@
+// Status Daily — CMS + backend data model
+//
+// PORTABILITY: written to run on SQLite now and Postgres later.
+// To migrate to Postgres, change `provider` below to "postgresql" and point
+// DATABASE_URL at the Postgres instance — no model changes required.
+// (We intentionally avoid Prisma enums and scalar lists, which SQLite lacks;
+//  status/type fields are Strings with documented allowed values.)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  // URL lives in prisma.config.ts (Prisma 7); runtime uses a driver adapter.
+}
+
+// ---------------------------------------------------------------------------
+// CMS admins (dashboard login). Separate from app users.
+// ---------------------------------------------------------------------------
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("admin") // admin | superadmin
+  createdAt    DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// Languages — dynamically managed from CMS (blueprint §3, §19).
+// ---------------------------------------------------------------------------
+model Language {
+  id         String  @id @default(cuid())
+  code       String  @unique // hi, en, mr, ta, te, kn, ml
+  name       String // English name, e.g. "Hindi"
+  nativeName String // native script, e.g. "हिन्दी"
+  isActive   Boolean @default(true)
+  sortOrder  Int     @default(0)
+
+  categories Category[] // m2m: which categories appear in this language
+  content    Content[]
+  users      User[] // users who picked this as preferred language
+
+  createdAt DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// App users (blueprint §14 User Management).
+// ---------------------------------------------------------------------------
+model User {
+  id           String    @id @default(cuid())
+  mobile       String    @unique
+  name         String?
+  photoUrl     String?
+  languageId   String?
+  language     Language? @relation(fields: [languageId], references: [id])
+  deviceInfo   String? // free-form JSON string (model, os, appVersion)
+  isPremium    Boolean   @default(false)
+  registeredAt DateTime  @default(now())
+  lastActiveAt DateTime  @default(now())
+
+  likes      Like[]
+  shares     ShareEvent[]
+  reports    Report[]
+  activities ActivityEvent[]
+}
+
+// ---------------------------------------------------------------------------
+// Categories (blueprint §5, §18). Published categories appear in the app.
+// ---------------------------------------------------------------------------
+model Category {
+  id          String     @id @default(cuid())
+  key         String     @unique // slug, e.g. "good_morning"
+  name        String // display name (English; localized strings live in app i18n)
+  iconUrl     String?
+  isPublished Boolean    @default(false)
+  sortOrder   Int        @default(0)
+  languages   Language[] // m2m language mapping
+  content     Content[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Content — image/video templates (blueprint §21, §22).
+// status: draft | published   |   type: image | video
+// ---------------------------------------------------------------------------
+model Content {
+  id           String   @id @default(cuid())
+  type         String // image | video
+  title        String?
+  mediaUrl     String // path under /uploads (local now, S3/R2 later)
+  thumbnailUrl String?
+  categoryId   String
+  category     Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  languageId   String
+  language     Language @relation(fields: [languageId], references: [id])
+
+  status    String  @default("draft") // draft | published
+  isBlocked Boolean @default(false) // moderation: hidden from app
+  isTrending Boolean @default(false) // weighted priority in feed (§25)
+
+  shareCount  Int @default(0)
+  likeCount   Int @default(0)
+  reportCount Int @default(0)
+
+  // Content reuse / clone lineage (blueprint §23)
+  originalContentId String?
+  clones            Content[] @relation("ContentClone")
+  original          Content?  @relation("ContentClone", fields: [originalContentId], references: [id])
+
+  uploadDate  DateTime  @default(now())
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  likes   Like[]
+  shares  ShareEvent[]
+  reports Report[]
+
+  @@index([categoryId])
+  @@index([languageId])
+  @@index([status])
+  @@index([type])
+}
+
+// ---------------------------------------------------------------------------
+// Engagement & tracking (blueprint §11, §12, §15, §28).
+// ---------------------------------------------------------------------------
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contentId String
+  content   Content  @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, contentId])
+}
+
+model ShareEvent {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  contentId String
+  content   Content  @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  platform  String // whatsapp | facebook | instagram | telegram | snapchat | other
+  createdAt DateTime @default(now())
+
+  @@index([contentId])
+  @@index([platform])
+  @@index([createdAt])
+}
+
+model Report {
+  id         String    @id @default(cuid())
+  userId     String?
+  user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  contentId  String
+  content    Content   @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  reason     String
+  status     String    @default("pending") // pending | resolved | ignored
+  createdAt  DateTime  @default(now())
+  resolvedAt DateTime?
+
+  @@index([status])
+}
+
+// Generic activity log powering analytics (§15, §16, §27).
+model ActivityEvent {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type            String // category_view | session | share | report | open
+  categoryId      String?
+  contentId       String?
+  platform        String?
+  sessionSeconds  Int?
+  createdAt       DateTime @default(now())
+
+  @@index([type])
+  @@index([createdAt])
+}
