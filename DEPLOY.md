@@ -45,8 +45,9 @@ git push -u origin main   # (or master — check `git branch`)
 ## 5. Deploy on Vercel
 1. **Add New… → Project** → import the GitHub repo.
 2. Framework preset: **Next.js** (auto). Leave build command default — the repo's
-   `vercel-build` script runs `prisma generate && prisma migrate deploy && next build`,
-   so **migrations apply automatically on every deploy**.
+   `vercel-build` script runs `prisma generate && next build`. Migrations are NOT
+   run during the build (Neon free-tier auto-suspends and can time out a build-time
+   migration). Run migrations deliberately instead — see step 6.
 3. Add **Environment Variables** (Production + Preview):
 
    | Name | Value |
@@ -59,7 +60,7 @@ git push -u origin main   # (or master — check `git branch`)
    | `R2_BUCKET` | bucket name, e.g. `status-daily-media` |
    | `R2_PUBLIC_URL` | `https://pub-xxxx.r2.dev` (no trailing slash) |
 
-4. **Deploy.** First build creates the tables on Neon via `migrate deploy`.
+4. **Deploy.** (Tables are created by `npm run db:deploy`, step 6 — not the build.)
 
 ## 6. Seed the config (once)
 The DB is empty after migration. Seed admin + 7 languages + 14 categories.
@@ -95,5 +96,6 @@ Now the installed APK loads the feed from anywhere, on Wi-Fi or mobile data.
   (or a Neon dev branch). The SQLite path is gone.
 - Existing local `/public/uploads` media does **not** migrate automatically —
   re-upload through the CMS after deploy so files land in R2.
-- Migrations are applied by `migrate deploy` at build time; you never run
-  `migrate dev` in production.
+- Migrations are applied deliberately with `npm run db:deploy` (against Neon),
+  NOT at build time. You never run `migrate dev` in production. Only re-run
+  `db:deploy` when you add a new migration.
