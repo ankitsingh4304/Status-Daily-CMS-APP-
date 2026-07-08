@@ -6,7 +6,7 @@ export async function GET() {
   return NextResponse.json({
     commit: process.env.VERCEL_GIT_COMMIT_SHA ?? 'local',
     node: process.version,
-    storageFix: 'stack-trace-v2', // marker string; changes when this build recompiles
+    storageFix: 'r2-normal-bytes', // marker string; changes when this build recompiles
     env: {
       DATABASE_URL: Boolean(process.env.DATABASE_URL),
       R2_ACCOUNT_ID: Boolean(process.env.R2_ACCOUNT_ID),

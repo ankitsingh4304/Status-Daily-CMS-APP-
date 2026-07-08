@@ -69,6 +69,17 @@ export type SavedMedia = {
 export type UploadKind = 'content' | 'profile'
 
 /**
+ * Copy bytes onto a freshly-allocated, NON-shared ArrayBuffer. `new Uint8Array(n)`
+ * always allocates a normal ArrayBuffer, so the result's `.buffer` is never a
+ * SharedArrayBuffer — which the AWS SDK's request signer refuses to hash.
+ */
+function toNormalBytes(buf: Uint8Array): Uint8Array {
+  const out = new Uint8Array(buf.byteLength)
+  out.set(buf)
+  return out
+}
+
+/**
  * Persist an uploaded file and return its public URL.
  * `folder` namespaces the object key (e.g. 'content' vs 'profile' photos).
  */
@@ -76,12 +87,7 @@ export async function saveMediaFile(file: File, folder: UploadKind = 'content'):
   const mime = file.type || 'application/octet-stream'
   const isVideo = mime.startsWith('video')
   const kind: 'image' | 'video' = isVideo ? 'video' : 'image'
-  // On the serverless runtime file.arrayBuffer() can return a SharedArrayBuffer,
-  // which Buffer.from()/sharp reject. Copy the bytes into a fresh, normally-backed
-  // Buffer so no SharedArrayBuffer reference survives.
-  const bytes = new Uint8Array(await file.arrayBuffer())
-  const input = Buffer.alloc(bytes.byteLength)
-  input.set(bytes)
+  const input = Buffer.from(await file.arrayBuffer())
 
   // Images → WebP for size; video passes through untouched.
   let body: Buffer = input
@@ -100,7 +106,11 @@ export async function saveMediaFile(file: File, folder: UploadKind = 'content'):
       new PutObjectCommand({
         Bucket: R2.bucket!,
         Key: key,
-        Body: body,
+        // The AWS SDK SHA-256-hashes the body to sign the request, and its hasher
+        // rejects a Buffer backed by a SharedArrayBuffer (which file.arrayBuffer()
+        // yields on the serverless runtime). Hand it bytes on a fresh, normal
+        // ArrayBuffer so signing never sees a SharedArrayBuffer.
+        Body: toNormalBytes(body),
         ContentType: contentType,
       }),
     )

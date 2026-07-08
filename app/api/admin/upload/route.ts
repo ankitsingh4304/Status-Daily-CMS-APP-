@@ -17,7 +17,6 @@ export async function POST(req: Request) {
   } catch (err) {
     const e = err as Error
     console.error('[upload] failed:', e?.stack)
-    // TEMP DIAGNOSTIC: return the stack so we can see exactly which line throws.
-    return serverError(`Upload failed: ${e?.name}: ${e?.message}\n---STACK---\n${e?.stack}`)
+    return serverError(`Upload failed: ${e?.name}: ${e?.message}`)
   }
 }
