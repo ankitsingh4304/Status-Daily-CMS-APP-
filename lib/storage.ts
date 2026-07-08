@@ -77,8 +77,11 @@ export async function saveMediaFile(file: File, folder: UploadKind = 'content'):
   const isVideo = mime.startsWith('video')
   const kind: 'image' | 'video' = isVideo ? 'video' : 'image'
   // On the serverless runtime file.arrayBuffer() can return a SharedArrayBuffer,
-  // which Buffer.from() rejects — wrap in a Uint8Array view first to copy bytes.
-  const input = Buffer.from(new Uint8Array(await file.arrayBuffer()))
+  // which Buffer.from()/sharp reject. Copy the bytes into a fresh, normally-backed
+  // Buffer so no SharedArrayBuffer reference survives.
+  const bytes = new Uint8Array(await file.arrayBuffer())
+  const input = Buffer.alloc(bytes.byteLength)
+  input.set(bytes)
 
   // Images → WebP for size; video passes through untouched.
   let body: Buffer = input
