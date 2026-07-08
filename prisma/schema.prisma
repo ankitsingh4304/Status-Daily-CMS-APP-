@@ -11,7 +11,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   // URL lives in prisma.config.ts (Prisma 7); runtime uses a driver adapter.
 }
 
