@@ -1,8 +1,8 @@
 import { saveMediaFile } from '@/lib/storage'
-import { badRequest, created, requireAdmin } from '@/lib/api'
+import { badRequest, created, requireAdmin, serverError } from '@/lib/api'
 import { NextResponse } from 'next/server'
 
-// Media upload — saves to local disk now, returns a public URL.
+// Media upload — stores to R2 in production (local disk in dev), returns a public URL.
 export async function POST(req: Request) {
   const guard = await requireAdmin()
   if (guard instanceof NextResponse) return guard
@@ -11,6 +11,12 @@ export async function POST(req: Request) {
   const file = form?.get('file')
   if (!(file instanceof File)) return badRequest('No file provided (field "file")')
 
-  const saved = await saveMediaFile(file)
-  return created(saved)
+  try {
+    const saved = await saveMediaFile(file)
+    return created(saved)
+  } catch (err) {
+    const e = err as Error
+    console.error('[upload] failed:', e?.name, e?.message)
+    return serverError(`Upload failed: ${e?.name ?? 'Error'}: ${e?.message ?? 'unknown'}`)
+  }
 }
